@@ -32,7 +32,7 @@ def makeMaze(filename):
 
     print(lines)
     #pp.pprint(graph)
-    maze_file.close()
+    maze_file.close()  #this is cool
 
 #makeMaze('mediumMaze.txt')
 makeMaze('openMaze.txt')
