@@ -9,30 +9,48 @@ pp = pprint.PrettyPrinter(indent=2)
 def makeMaze(filename):
     #with open('file.txt') as file:
         #contents = file.read()
-
     maze_file = open(filename)
     lines = maze_file.readlines()
     graph = []
-    for line in lines:
+    start = []
+    for i, line in enumerate(lines):
+    #for i in range(len(lines)):
         row = []
-        for char in line:
+        for j, char in enumerate(line):
+        #for j in range(len(line)):
             if char == ' ':
-                #row.append('path')
-                row.append(' ')
+                row.append('path')
+                #row.append(' ')
             elif char == '%':
-                #row.append('wall')
-                row.append('%')
+                row.append('wall')
+                #row.append('%')
             elif char == 'P':
-                #row.append('start')
-                row.append('P')
+                row.append('start')
+                set.update(i, j)
+                #row.append('P')
             elif char == '.':
-                #row.append('goal')
-                row.append('.')
+                row.append('goal')
+                #row.append('.')
         graph.append(row)
 
     print(lines)
     #pp.pprint(graph)
     maze_file.close()  #this is cool
+    return graph, start
+
+
+
+def DFS(graph, start):
+    stack = []
+    visited = []
+    start_x = start[0]
+    start_y = start[1]
+    stack.append(start)
+    #for i in range(graph):
+        #for j in range(graph[i]):
+    while stack is not None:
+        stack.pop[0]
+        if 
 
 #makeMaze('mediumMaze.txt')
-makeMaze('openMaze.txt')
+graph, start = makeMaze('openMaze.txt')
