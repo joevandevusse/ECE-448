@@ -49,8 +49,35 @@ def DFS(graph, start):
     #for i in range(graph):
         #for j in range(graph[i]):
     while stack is not None:
-        stack.pop[0]
-        if 
+        node = stack.pop[0]
+        if node not in visited:
+            visited.append(node)
+            # Check if any neighbors are goal states
+            # Right
+            if node[0] < len(graph)-1 and graph[node[0]+1][node[1]] == 'goal':
+                return graph[node[0]+1][node[1]]
+            # Up
+            if node[1] < len(graph)-1 and graph[node[0]][node[1]+1] == 'goal':
+                return graph[node[0]][node[1]+1]
+            # Left
+            if node[1] and graph[node[0]-1][node[1]] == 'goal':
+                return graph[node[0]-1][node[1]]
+            # Down
+            if node[1] > 0 and graph[node[0]][node[1]-1] == 'goal':
+                return graph[node[0]][node[1]-1]
+            # Check if neighbors haven't been visited
+            # Right
+            if node[0] < len(graph)-1 and graph[node[0]+1][node[1]] == 'path':
+                stack.append(graph[node[0]+1][node[1]])
+            # Up
+            if node[1] < len(graph)-1 and graph[node[0]][node[1]+1] == 'path':
+                stack.append(graph[node[0]][node[1]+1])
+            # Left
+            if node[1] and graph[node[0]-1][node[1]] == 'path':
+                stack.appen(graph[node[0]-1][node[1]])
+            # Down
+            if node[1] > 0 and graph[node[0]][node[1]-1] == 'path':
+                stack.append(graph[node[0]][node[1]-1])
 
 #makeMaze('mediumMaze.txt')
 graph, start = makeMaze('openMaze.txt')
