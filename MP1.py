@@ -12,7 +12,7 @@ def makeMaze(filename):
     maze_file = open(filename)
     lines = maze_file.readlines()
     graph = []
-    start = []
+    start = None
     for i, line in enumerate(lines):
     #for i in range(len(lines)):
         row = []
@@ -26,14 +26,14 @@ def makeMaze(filename):
                 #row.append('%')
             elif char == 'P':
                 row.append('start')
-                set.update(i, j)
+                start = (i, j)
                 #row.append('P')
             elif char == '.':
                 row.append('goal')
                 #row.append('.')
         graph.append(row)
 
-    print(lines)
+    #print(lines)
     #pp.pprint(graph)
     maze_file.close()  #this is cool
     return graph, start
@@ -43,41 +43,48 @@ def makeMaze(filename):
 def DFS(graph, start):
     stack = []
     visited = []
-    start_x = start[0]
-    start_y = start[1]
+    #start_x = start[0]
+    #start_y = start[1]
     stack.append(start)
     #for i in range(graph):
         #for j in range(graph[i]):
     while stack is not None:
-        node = stack.pop[0]
+        print('Stack:', stack)
+        node = stack[0]
+        stack.pop(0)
         if node not in visited:
             visited.append(node)
+            print('Visited:', visited)
             # Check if any neighbors are goal states
             # Right
-            if node[0] < len(graph)-1 and graph[node[0]+1][node[1]] == 'goal':
-                return graph[node[0]+1][node[1]]
+            if int(node[0]) < len(graph)-1 and graph[node[0]+1][node[1]] == 'goal':
+                return (node[0]+1, node[1])
             # Up
-            if node[1] < len(graph)-1 and graph[node[0]][node[1]+1] == 'goal':
-                return graph[node[0]][node[1]+1]
+            elif int(node[1]) < len(graph[0])-1 and graph[node[0]][node[1]+1] == 'goal':
+                return (node[0], node[1]+1)
             # Left
-            if node[1] and graph[node[0]-1][node[1]] == 'goal':
-                return graph[node[0]-1][node[1]]
+            elif int(node[0]) > 0 and graph[node[0]-1][node[1]] == 'goal':
+                return (node[0]-1, node[1])
             # Down
-            if node[1] > 0 and graph[node[0]][node[1]-1] == 'goal':
-                return graph[node[0]][node[1]-1]
+            elif int(node[1]) > 0 and graph[node[0]][node[1]-1] == 'goal':
+                return (node[0], node[1]-1)
             # Check if neighbors haven't been visited
             # Right
-            if node[0] < len(graph)-1 and graph[node[0]+1][node[1]] == 'path':
-                stack.append(graph[node[0]+1][node[1]])
+            if int(node[0]) < len(graph)-1 and graph[node[0]+1][node[1]] == 'path':
+                stack.append((node[0]+1, node[1]))
             # Up
-            if node[1] < len(graph)-1 and graph[node[0]][node[1]+1] == 'path':
-                stack.append(graph[node[0]][node[1]+1])
+            if int(node[0]) < len(graph)-1 and graph[node[0]][node[1]+1] == 'path':
+                stack.append((node[0], node[1]+1))
             # Left
-            if node[1] and graph[node[0]-1][node[1]] == 'path':
-                stack.appen(graph[node[0]-1][node[1]])
+            if int(node[1]) > 0 and graph[node[0]-1][node[1]] == 'path':
+                stack.append((node[0]-1, node[1]))
             # Down
-            if node[1] > 0 and graph[node[0]][node[1]-1] == 'path':
-                stack.append(graph[node[0]][node[1]-1])
+            if int(node[1]) > 0 and graph[node[0]][node[1]-1] == 'path':
+                stack.append((node[0], node[1]-1))
 
 #makeMaze('mediumMaze.txt')
-graph, start = makeMaze('openMaze.txt')
+#graph, start = makeMaze('openMaze.txt')
+graph, start = makeMaze('smallMaze.txt')
+#print(graph)
+dest = DFS(graph, start)
+print(dest)
