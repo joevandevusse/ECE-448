@@ -1,4 +1,4 @@
-
+#!/usr/bin/python3
 # Our heuristic, to help you out, was to make a minimal spanning tree from the current node to all other unvisited nodes
 # Which basically meant adding up the number of edges in a Breadth First Search that hit every other unseen place we needed to go
 
@@ -226,12 +226,39 @@ def AStar(graph, start, end):
             if int(node[1]) > 0 and graph[node[0]][node[1]-1] == 'path':
                 neighbors.append((node[0], node[1]-1, node[2]+1))
 
-#graph, start, end = makeMaze('mediumMaze.txt')
-#graph, start, end = makeMaze('openMaze.txt')
-graph, start, end = makeMaze('smallMaze.txt')
-#print(graph)
-#dest = BFS(graph, start)
-#dest = DFS(graph, start)
-#dest = GBFS(graph, start, end)
-dest = AStar(graph, start, end)
-print(dest)
+def MST(start, goals_list):
+    best = ()
+    best_weight = 100000
+    for i in goals_list:
+        dist = (abs(end[0]-goals_list[i][0])**2 + abs(end[1]-goals_list[i][1]))**(1/2)
+        sub_list = goals_list - i
+        mst_dists = []
+        for j in sub_list:
+            mst_dists.append((abs(end[0]-goals_list[i][0])**2 + abs(end[1]-goals_list[i][1]))**(1/2))
+        #neighbor_avg = sum(mst_dists)/len(mst_dists)
+        neighbor_avg = sum(mst_dists)
+        # h(n) = f(n) + g(n)
+        weight = dist+neighbor_avg)/2)
+        if weight < best_weight:
+            best = (i[0], i[1])
+    return best
+
+def pacman(graph, start, goals):
+    curr_start = start
+    for i in range(len(goals)):
+        goal_to_pursue = MST(curr_start, goals)
+        new_start = AStar(graph, curr_start, goal_to_pursue)
+        curr_start = new_start
+        if curr_start in goals:
+            goals.remove(curr_start)
+
+if __name__ == "main":
+    #graph, start, end = makeMaze('mediumMaze.txt')
+    graph, start, end = makeMaze('openMaze.txt')
+    #graph, start, end = makeMaze('smallMaze.txt')
+    #print(graph)
+    #dest = BFS(graph, start)
+    #dest = DFS(graph, start)
+    dest = GBFS(graph, start, end)
+    #dest = AStar(graph, start, end)
+    print(dest)
