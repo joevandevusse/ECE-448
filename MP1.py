@@ -13,8 +13,8 @@ def makeMaze(filename):
     maze_file = open(filename)
     lines = maze_file.readlines()
     graph = []
-    start = None
-    end = None
+    start = ()
+    goal_s = []
     for i, line in enumerate(lines):
     #for i in range(len(lines)):
         row = []
@@ -32,13 +32,13 @@ def makeMaze(filename):
                 #row.append('P')
             elif char == '.':
                 row.append('goal')
-                end = (i, j)
+                goal_s.append((i, j))
                 #row.append('.')
         graph.append(row)
     #print(lines)
     #pp.pprint(graph)
     maze_file.close()  #this is cool
-    return graph, start, end
+    return graph, start, goal_s
 
 # Breadth-First Search
 def BFS(graph, start):
@@ -121,11 +121,12 @@ def DFS(graph, start):
                 stack.append((node[0], node[1]-1))
 
 # Manhattan distance heuristic for GBFS
-def chooseManhattan(some_list, dest):
+def chooseManhattan(move_options, dest):
+    #print(type(move_options), type(dest))
     best_dist = 1000000
     best_index = -1
-    for i in range(len(some_list)):
-        dist = (abs(dest[0]-some_list[i][0])**2 + abs(dest[1]-some_list[i][1]))**(1/2)
+    for i in range(len(move_options)):
+        dist = (abs(dest[0]-move_options[i][0])**2 + abs(dest[1]-move_options[i][1]))**(1/2)
         if dist < best_dist:
             best_dist = dist
             best_index = i
@@ -133,6 +134,7 @@ def chooseManhattan(some_list, dest):
 
 # Greedy Best-First Search
 def GBFS(graph, start, end):
+    #print(type(end))
     neighbors = []
     visited = []
     neighbors.append(start)
@@ -172,12 +174,12 @@ def GBFS(graph, start, end):
             if int(node[1]) > 0 and graph[node[0]][node[1]-1] == 'path':
                 neighbors.append((node[0], node[1]-1))
 
-def chooseManhattanPlusCost(some_list, destination):
+def chooseManhattanPlusCost(move_options, dest):
     best_f = 1000000
     best_index = -1
-    for i in range(len(some_list)):
-        dist = (abs(end[0]-some_list[i][0])**2 + abs(end[1]-some_list[i][1]))**(1/2)
-        cost = some_list[i][2]
+    for i in range(len(move_options)):
+        dist = (abs(dest[0]-move_options[i][0])**2 + abs(dest[1]-move_options[i][1]))**(1/2)
+        cost = move_options[i][2]
         f = dist + cost
         if f < best_f:
             best_f = f
@@ -230,35 +232,45 @@ def MST(start, goals_list):
     best = ()
     best_weight = 100000
     for i in goals_list:
-        dist = (abs(end[0]-goals_list[i][0])**2 + abs(end[1]-goals_list[i][1]))**(1/2)
-        sub_list = goals_list - i
+        dist = (abs(start[0]-i[0])**2 + abs(start[1]-i[1]))**(1/2)
+        sub_list = [x for x in goals_list if x is not i]
         mst_dists = []
         for j in sub_list:
-            mst_dists.append((abs(end[0]-goals_list[i][0])**2 + abs(end[1]-goals_list[i][1]))**(1/2))
+            #print(type(i), type(j), type(sub_list))
+            mst_dists.append((abs(j[0]-i[0])**2 + abs(j[1]-i[1]))**(1/2))
         #neighbor_avg = sum(mst_dists)/len(mst_dists)
         neighbor_avg = sum(mst_dists)
         # h(n) = f(n) + g(n)
-        weight = dist+neighbor_avg)/2)
+        weight = (dist + neighbor_avg)/2
         if weight < best_weight:
             best = (i[0], i[1])
     return best
 
 def pacman(graph, start, goals):
+    #print(type(goals))
     curr_start = start
     for i in range(len(goals)):
         goal_to_pursue = MST(curr_start, goals)
-        new_start = AStar(graph, curr_start, goal_to_pursue)
+        #new_start = AStar(graph, curr_start, goal_to_pursue)
+        new_start = GBFS(graph, curr_start, goal_to_pursue)
         curr_start = new_start
         if curr_start in goals:
             goals.remove(curr_start)
 
-if __name__ == "main":
-    #graph, start, end = makeMaze('mediumMaze.txt')
-    graph, start, end = makeMaze('openMaze.txt')
-    #graph, start, end = makeMaze('smallMaze.txt')
-    #print(graph)
-    #dest = BFS(graph, start)
-    #dest = DFS(graph, start)
-    dest = GBFS(graph, start, end)
-    #dest = AStar(graph, start, end)
-    print(dest)
+graph, start, goal = makeMaze('mediumMaze.txt')
+#print(type(goal_s))
+#graph, start, goal = makeMaze('openMaze.txt')
+#graph, start, goal = makeMaze('smallMaze.txt')
+#print(graph)
+#dest = BFS(graph, start)
+#dest = DFS(graph, start)
+#dest = GBFS(graph, start, goal_s)
+#dest = AStar(graph, start, goal_s)
+
+graph, start, goal_s = makeMaze('tinySearch.txt')
+#print(graph)
+dest = pacman(graph, start, goal_s)
+print(dest)
+
+#if __name__ == "main":
+    #test()
